@@ -9,13 +9,6 @@ type Name = String
 data FamilyTree = Unknown | Person Name FamilyTree FamilyTree
 
 
--- Dad Dad
--- Mom Dad
--- Dad Dad Dad
--- Dad Mom Dad
--- Mom Dad Dad
--- Mom Mom Dad
-
 name :: FamilyTree -> Name
 name (Person n _ _) = n
 name Unknown = "Unknown"
@@ -28,8 +21,37 @@ mom :: FamilyTree -> FamilyTree
 mom (Person _ _ mom) = mom
 mom Unknown = Unknown
 
+
+-- Dad Dad
+-- Mom Dad
+-- Dad Dad Dad
+-- Dad Mom Dad
+-- Mom Dad Dad
+-- Mom Mom Dad
+
+dadMom = recurDadMom 1
+  where recurDadMom index = replicate index dad ++
+                            replicate index mom ++
+                            recurDadMom (index+1)
+
+nextSquare :: Int -> Int
+nextSquare i = recurNextSquare 1
+  where recurNextSquare index =
+          if i < (2 ^ index) then
+             index
+          else
+            recurNextSquare (index+1)
+
+boyKernel = [dad . dad, dad . mom]
+
 boyGetters :: [FamilyTree -> FamilyTree]
-boyGetters = [dad . dad, dad . mom, dad . dad . dad]
+boyGetters = boyKernel ++ map boyGetter [2..]
+  where
+    boyGetter index = (dadMom !! index) . (previous index)
+    previous index = boyGetters !! (index - nextSquare index)
+
+-- boyGetters :: [FamilyTree -> FamilyTree]
+-- boyGetters = [dad . dad, dad . mom, dad . dad . dad]
 
 boyNameGetters :: [FamilyTree -> Name]
 boyNameGetters = map (\ getter -> name . getter) boyGetters

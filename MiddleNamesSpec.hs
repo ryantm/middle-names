@@ -16,7 +16,7 @@ main :: IO ()
 main = hspec (do
   describe "middleNames" (do
     it "the first boy should be Kerry" (do
-       putStrLn (show (middleNames Boy familyTree))
+       putStrLn (show (take 5 (middleNames Boy familyTree)))
        head (middleNames Boy familyTree) `shouldBe` "Kerry")
     it "the second boy should be David" (do
        head (tail (middleNames Boy familyTree)) `shouldBe` "David")
