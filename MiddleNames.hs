@@ -1,70 +1,91 @@
 module MiddleNames where
 
+import Data.Tree
 
 data Sex = Boy | Girl
 
 type Name = String
 
--- Person Name Father Mother
-data FamilyTree = Unknown | Person Name FamilyTree FamilyTree
-
+type FamilyTree = Tree Name
 
 name :: FamilyTree -> Name
-name (Person n _ _) = n
-name Unknown = "Unknown"
-
-dad :: FamilyTree -> FamilyTree
-dad (Person _ dad _) = dad
-dad Unknown = Unknown
-
-mom :: FamilyTree -> FamilyTree
-mom (Person _ _ mom) = mom
-mom Unknown = Unknown
+name = rootLabel
 
 
--- Dad Dad
--- Mom Dad
--- Dad Dad Dad
--- Dad Mom Dad
--- Mom Dad Dad
--- Mom Mom Dad
+familyTree =
+  Node "Midas"
+   [Node "Ryan"
+    [Node "Kerry"
+     [Node "Grandpa Mulligan" [],
+      Node "Claudine" []],
+     Node "Joan"
+     [Node "Grandpa Egan" [],
+      Node "Julia" []]],
+    Node "Andrea"
+    [Node "David"
+     [Node "Carl" [],
+      Node "Selma" []],
+     Node "Christine"
+     [Node "Grandpa Christine" [],
+      Node "Nelly" []]]]
 
-dadMom = recurDadMom 1
-  where recurDadMom index = replicate index dad ++
-                            replicate index mom ++
-                            recurDadMom (index+1)
 
-nextSquare :: Int -> Int
-nextSquare i = recurNextSquare 1
-  where recurNextSquare index =
-          if i < (2 ^ index) then
-             index
-          else
-            recurNextSquare (index+1)
 
-boyKernel = [dad . dad, dad . mom]
 
-boyGetters :: [FamilyTree -> FamilyTree]
-boyGetters = boyKernel ++ map boyGetter [2..]
-  where
-    boyGetter index = (dadMom !! index) . (previous index)
-    previous index = boyGetters !! (index - nextSquare index)
 
--- boyGetters :: [FamilyTree -> FamilyTree]
--- boyGetters = [dad . dad, dad . mom, dad . dad . dad]
+-- data Choice = A | B deriving Show
 
-boyNameGetters :: [FamilyTree -> Name]
-boyNameGetters = map (\ getter -> name . getter) boyGetters
 
-dads :: FamilyTree -> [Name]
-dads ft = map (\ getter -> getter ft) boyNameGetters
+-- subtraction :: Int -> Int
+-- subtraction i = recur 1
+--   where recur index =
+--           if i < (2 ^ index) then
+--              (2 ^ (index -1))
+--           else
+--             recur (index+1)
 
-moms :: FamilyTree -> [Name]
-moms (Person _ _ mom) =
-  case mom of
-  Unknown -> []
-  ft@(Person name _ mom) -> [name] ++ moms ft
+-- aB = recurAB 1
+--   where recurAB index = replicate index A ++
+--                             replicate index B ++
+--                             recurAB (index*2)
 
-middleNames :: Sex -> FamilyTree -> [Name]
-middleNames Boy ft = dads ft
-middleNames Girl ft = drop 1 (moms ft)
+-- kernel = [ [A, A], [B, A]]
+
+-- getters :: [[Choice]]
+-- getters = kernel ++ map getter [2..]
+--   where
+--     getter index = (aB !! index) : (previous index)
+--     previous index = getters !! (index - subtraction index)
+
+
+
+-- -- boyNameGetters :: [FamilyTree -> Name]
+-- -- boyNameGetters = map (\ getter -> name . getter) boyGetters
+
+-- -- dads :: FamilyTree -> [Name]
+-- -- dads ft = map (\ getter -> getter ft) boyNameGetters
+
+
+
+-- -- momDad = recurMomDad 1
+-- --   where recurMomDad index = replicate index mom ++
+-- --                             replicate index dad ++
+-- --                             recurMomDad (index+1)
+
+-- -- girlKernel = [mom . mom, mom . dad]
+
+-- -- girlGetters :: [FamilyTree -> FamilyTree]
+-- -- girlGetters = girlKernel ++ map girlGetter [2..]
+-- --   where
+-- --     girlGetter index = (momDad !! index) . (previous index)
+-- --     previous index = trace (show (index - nextSquare index)) (girlGetters !! (index - nextSquare index))
+
+-- -- girlNameGetters :: [FamilyTree -> Name]
+-- -- girlNameGetters = map (\ getter -> name . getter) girlGetters
+
+-- -- moms :: FamilyTree -> [Name]
+-- -- moms ft = map (\ getter -> getter ft) girlNameGetters
+
+-- -- middleNames :: Sex -> FamilyTree -> [Name]
+-- -- middleNames Boy ft = dads ft
+-- -- middleNames Girl ft = moms ft
