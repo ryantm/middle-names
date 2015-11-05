@@ -1,5 +1,6 @@
 module MiddleNamesSpec where
 
+import Data.Tree
 import Test.Hspec
 
 import MiddleNames
@@ -25,16 +26,10 @@ main :: IO ()
 main = hspec (do
   describe "middleNames" (do
     it "the first boy should be Kerry" (do
-       putStrLn (show (take 10 (middleNames Boy familyTree)))
        head (middleNames Boy familyTree) `shouldBe` "Kerry")
     it "the second boy should be David" (do
        head (tail (middleNames Boy familyTree)) `shouldBe` "David")
-    it "the first boy should be Daniel" (do
-       head (middleNames Boy otherFamilyTree) `shouldBe` "Daniel")
     it "the first girl should be Christine" (do
-       putStrLn (show (take 10 (middleNames Girl familyTree)))
        head (middleNames Girl familyTree) `shouldBe` "Christine")
     it "the second girl should be Joan" (do
-       head (tail (middleNames Girl familyTree)) `shouldBe` "Joan")
-    it "the first girl should be Waipo" (do
-       head (middleNames Girl otherFamilyTree) `shouldBe` "Waipo")))
+       head (tail (middleNames Girl familyTree)) `shouldBe` "Joan")))
